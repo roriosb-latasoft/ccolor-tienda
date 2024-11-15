@@ -121,6 +121,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -140,4 +141,10 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'rodrigorios007@gmail.com'  # Tu correo de Gmail o el que uses para enviar los correos
 EMAIL_HOST_PASSWORD = 'upri tblp vdgx xeum'  # Tu contraseña o la contraseña de aplicación
+
+import os
+DEBUG = os.getenv("DEBUG", "False") == "True"
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+MIDDLEWARE += ['whitenoise.middleware.WhiteNoiseMiddleware']
+
 
