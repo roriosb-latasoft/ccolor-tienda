@@ -115,5 +115,23 @@ def delete_product(request, product_id):
     messages.success(request, 'Producto eliminado exitosamente')
     return redirect('crud')
 
+from django.shortcuts import render
+from django.http import JsonResponse
+
+# Variable para almacenar temporalmente los datos del carrito
+cart_data = []
+
+def carrito(request):
+    global cart_data
+    if request.method == 'POST':
+        # Recibir datos del carrito desde JavaScript
+        import json
+        cart_data = json.loads(request.body)
+        return JsonResponse({'message': 'Carrito recibido correctamente'})
+
+    # Renderizar la página de carrito con los datos actuales
+    return render(request, 'carrito.html', {'cart_items': cart_data})
+
+
 
 

@@ -37,7 +37,8 @@
                 </li>
                 <!-- Botón desplegable de Productos -->
                 <li class="nav-item dropdown mx-3">
-                    <a class="nav-link dropdown-toggle" href="#" id="productosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="#" id="productosDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         Productos
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="productosDropdown">
@@ -59,53 +60,57 @@
             </ul>
         </div>
     </nav>
-<!-- Carrito de Compras -->
-<div id="cart-sidebar" class="offcanvas offcanvas-end" style="width: 500px; height: 100%;" tabindex="-1" aria-labelledby="cartLabel">
-    <div class="offcanvas-header">
-        <h5 id="cartLabel">Carrito de Compras</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <ul id="cart-items" class="list-group mb-3">
-            <!-- Los productos añadidos al carrito se renderizan aquí dinámicamente -->
-        </ul>
-        <div class="d-flex justify-content-between align-items-center">
-            <strong>Total:</strong>
-            <span id="cart-total" class="fw-bold">$0.00</span>
+    <!-- Carrito de Compras -->
+    <!-- Carrito de Compras -->
+    <div id="cart-sidebar" class="offcanvas offcanvas-end" style="width: 500px; height: 100%;" tabindex="-1"
+        aria-labelledby="cartLabel">
+        <div class="offcanvas-header">
+            <h5 id="cartLabel">Carrito de Compras</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <button id="checkout-btn" class="btn btn-primary w-100 mt-3">Ir a Pagar</button>
+        <div class="offcanvas-body">
+            <ul id="cart-items" class="list-group mb-3">
+                <!-- Los productos añadidos al carrito se renderizan aquí dinámicamente -->
+            </ul>
+            <div class="d-flex justify-content-between align-items-center">
+                <strong>Total:</strong>
+                <span id="cart-total" class="fw-bold">$0.00</span>
+            </div>
+            <form method="POST" action="/carrito/">
+                {% csrf_token %}
+                <button id="checkout-btn" type="button" class="btn btn-primary w-100 mt-3">Ir a Pagar</button>
+            </form>
+        </div>
     </div>
-</div>
 
-<!-- Sección de productos -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-4">Productos</h2>
-        <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
-            <!-- Iterar sobre los productos -->
-            {% for product in products %}
-            <div class="col">
-                <div class="card h-100 text-center" style="padding: 10px;">
-                    <!-- Mostrar la imagen del producto -->
-                    <img src="{{ product.image.url }}" class="card-img-top mx-auto mb-5" style="width: 200px; height: 200px;" alt="{{ product.name }}">
-                    <div class="card-body p-5">
-                        <h6 class="card-title">{{ product.name }}</h6>
-                        <p class="card-text">${{ product.price }}</p>
-                        <button class="btn btn-outline-dark btn-sm add-to-cart" 
-                                data-id="{{ product.id }}" 
-                                data-name="{{ product.name }}" 
-                                data-type="{{ product.type }}" 
-                                data-price="{{ product.price }}" 
-                                data-image="{{ product.image.url }}">
-                            Agregar al carrito
-                        </button>
+
+    <!-- Sección de productos -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Productos</h2>
+            <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
+                <!-- Iterar sobre los productos -->
+                {% for product in products %}
+                <div class="col">
+                    <div class="card h-100 text-center" style="padding: 10px;">
+                        <!-- Mostrar la imagen del producto -->
+                        <img src="{{ product.image.url }}" class="card-img-top mx-auto mb-5"
+                            style="width: 200px; height: 200px;" alt="{{ product.name }}">
+                        <div class="card-body p-5">
+                            <h6 class="card-title">{{ product.name }}</h6>
+                            <p class="card-text">${{ product.price }}</p>
+                            <button class="btn btn-outline-dark btn-sm add-to-cart" data-id="{{ product.id }}"
+                                data-name="{{ product.name }}" data-type="{{ product.type }}"
+                                data-price="{{ product.price }}" data-image="{{ product.image.url }}">
+                                Agregar al carrito
+                            </button>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- Footer -->
     <footer class="text-white pt-4" style=" background-color: #262C3D;">
@@ -150,34 +155,34 @@
         const cartItems = JSON.parse(sessionStorage.getItem('cart')) || [];
         const cartItemsList = document.getElementById('cart-items');
         const cartTotal = document.getElementById('cart-total');
-    
+
         // Renderizar el carrito
         const renderCart = () => {
             cartItemsList.innerHTML = '';
             let total = 0;
-    
+
             cartItems.forEach((item, index) => {
                 const listItem = document.createElement('li');
                 listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
                 listItem.innerHTML = `
-                    <div>
-                        <img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px;" class="me-2">
-                        <span>${item.name}</span>
-                    </div>
-                    <div>
-                        <input type="number" value="${item.quantity}" min="1" data-index="${index}" class="form-control form-control-sm quantity-input" style="width: 60px;">
-                        <span class="ms-3 fw-bold">$${(item.price * item.quantity).toFixed(2)}</span>
-                        <button class="btn btn-sm btn-danger ms-3 remove-item  data-index="${index}">&times;</button>
-                    </div>
-                `;
+            <div>
+                <img src="${item.image}" alt="${item.name}" style="width: 50px; height: 50px;" class="me-2">
+                <span>${item.name}</span>
+            </div>
+            <div>
+                <input type="number" value="${item.quantity}" min="1" data-index="${index}" class="form-control form-control-sm quantity-input" style="width: 60px;">
+                <span class="ms-3 fw-bold">$${(item.price * item.quantity).toFixed(2)}</span>
+                <button class="btn btn-sm btn-danger ms-3 remove-item" data-index="${index}">&times;</button>
+            </div>
+        `;
                 cartItemsList.appendChild(listItem);
                 total += item.price * item.quantity;
             });
-    
+
             cartTotal.textContent = `$${total.toFixed(2)}`;
             sessionStorage.setItem('cart', JSON.stringify(cartItems));
         };
-    
+
         // Agregar al carrito
         document.querySelectorAll('.add-to-cart').forEach(button => {
             button.addEventListener('click', (e) => {
@@ -189,20 +194,20 @@
                     image: button.dataset.image,
                     quantity: 1
                 };
-    
+
                 const existingProduct = cartItems.find(item => item.id === product.id);
                 if (existingProduct) {
                     existingProduct.quantity += 1;
                 } else {
                     cartItems.push(product);
                 }
-    
+
                 renderCart();
                 const offcanvas = new bootstrap.Offcanvas(document.getElementById('cart-sidebar'));
                 offcanvas.show();
             });
         });
-    
+
         // Modificar cantidades y eliminar productos
         cartItemsList.addEventListener('change', (e) => {
             if (e.target.classList.contains('quantity-input')) {
@@ -211,7 +216,7 @@
                 renderCart();
             }
         });
-    
+
         cartItemsList.addEventListener('click', (e) => {
             if (e.target.classList.contains('remove-item')) {
                 const index = e.target.dataset.index;
@@ -219,16 +224,31 @@
                 renderCart();
             }
         });
-    
+
         // Renderizar el carrito al cargar la página
         renderCart();
-    
+
         // Botón de ir a pagar
         document.getElementById('checkout-btn').addEventListener('click', () => {
-            window.location.href = '/resumen-compra/';
+            fetch('/carrito/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify(cartItems)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/carrito/';
+                    } else {
+                        console.error('Error al enviar los datos del carrito.');
+                    }
+                });
         });
+
     </script>
-    
+
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
