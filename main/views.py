@@ -6,16 +6,13 @@ from .forms import ContactForm
 from django.core.mail import send_mail, BadHeaderError
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import ProductForm
-
-
+from django.http import JsonResponse
 
 # Create your views here.
 from django.shortcuts import render
 
 def index(request):
     return render(request, 'index.html')
-
-
 
 def logros(request):
     return render(request, 'logros.html')
@@ -33,22 +30,18 @@ def pago(request):
     return render(request, 'pago.html')
 
 
-@login_required
-def crud(request):
-    return render(request, 'crud.html')
+def seguimiento(request):
+    return render(request, 'seguimiento.html')
+
 
 def exit(request):
     logout(request)
-    return redirect('index.html')
+    return redirect('login')
 
 def product_list(request):
     products = Product.objects.all()  # Obtén todos los productos de la base de datos
     return render(request, 'productos.html', {'products': products})
 
-
-from django.core.mail import send_mail, BadHeaderError
-from django.contrib import messages
-from .forms import ContactForm
 
 def contact_view(request):
     if request.method == 'POST':
@@ -77,11 +70,8 @@ def contact_view(request):
     return render(request, 'contacto.html', {'form': form})
 
 
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product
-from .forms import ProductForm
-from django.contrib import messages
 
+@login_required
 def crud(request):
     products = Product.objects.all()  # Obtener todos los productos
     return render(request, 'crud.html', {'products': products})
@@ -90,9 +80,12 @@ def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
+            print("Datos válidos:", form.cleaned_data)  # Debug
             form.save()
             messages.success(request, 'Producto agregado exitosamente')
             return redirect('crud')
+        else:
+            print("Errores del formulario:", form.errors)  # Debug
     else:
         form = ProductForm()
     return render(request, 'add_product.html', {'form': form})
@@ -115,22 +108,31 @@ def delete_product(request, product_id):
     messages.success(request, 'Producto eliminado exitosamente')
     return redirect('crud')
 
-from django.shortcuts import render
-from django.http import JsonResponse
 
-# Variable para almacenar temporalmente los datos del carrito
+
 cart_data = []
 
 def carrito(request):
     global cart_data
     if request.method == 'POST':
-        # Recibir datos del carrito desde JavaScript
         import json
         cart_data = json.loads(request.body)
         return JsonResponse({'message': 'Carrito recibido correctamente'})
 
     # Renderizar la página de carrito con los datos actuales
     return render(request, 'carrito.html', {'cart_items': cart_data})
+
+
+def pago(request):
+    if request.method == 'GET':
+        total = request.GET.get('total', '0.00')  # Desde la URL
+    elif request.method == 'POST':
+        total = request.POST.get('total', '0.00')  # Desde el formulario
+
+    return render(request, 'pago.html', {'total': total})
+
+
+
 
 
 

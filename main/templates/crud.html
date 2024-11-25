@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <header class="py-3" style="background-color: #262C3D;">
+    <header class="py-3" style="background-color: #A7D3FA">
         <div class="container d-flex justify-content-between align-items-center" style="color: white;">
             <div>
                 <a href="#" class="text-light mx-1"><i class="bi bi-whatsapp"></i></a>
@@ -25,9 +25,7 @@
             <div class="text-center flex-grow-1">
                 <h5 class="m-0">Centro Color</h5>
             </div>
-            <div>
-                <button class="btn text-light" style="background-color: #FF5887;">Prueba Color</button>
-            </div>
+          >
         </div>
     </header>
     <!-- Navbar -->
@@ -59,6 +57,9 @@
                 </li>
                 <li class="nav-item mx-3">
                     <a class="nav-link" href="{% url 'contacto' %}">Contacto</a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link" href="{% url 'seguimiento' %}">Seguimiento pedido</a>
                 </li>
             </ul>
         </div>
@@ -106,6 +107,11 @@
             </tbody>
         </table>
     </div>
+
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+    </form>
 
 
 

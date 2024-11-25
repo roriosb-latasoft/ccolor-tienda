@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-px0-$hc8&=silx3y^dx2!)&18d0d_v&%!l3_okq-faw7ac20ha'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -142,3 +142,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'rodrigorios007@gmail.com'  # Tu correo de Gmail o el que uses para enviar los correos
 EMAIL_HOST_PASSWORD = 'upri tblp vdgx xeum'  # Tu contraseña o la contraseña de aplicación
 
+# Configuración para sesiones
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Cerrar sesión al cerrar el navegador
+
+LOGIN_URL = '/login/'  # URL para redirigir si el usuario no está autenticado

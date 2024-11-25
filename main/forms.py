@@ -14,11 +14,17 @@ class ContactForm(forms.ModelForm):
             'message': 'Mensaje',
         }
 
-
-
-
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'type', 'price', 'image', 'stock']
+        fields = ['name', 'type', 'price', 'image', 'stock', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'type': forms.TextInput(attrs={'class': 'form-control'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'stock': forms.NumberInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+        }
+
 
