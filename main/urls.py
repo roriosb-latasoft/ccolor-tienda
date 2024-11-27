@@ -19,6 +19,9 @@ urlpatterns = [
     path('login/', LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout/', views.exit, name='exit'),
     path('seguimiento/', views.seguimiento, name='seguimiento'),
+    path('carrito/pago/', views.procesar_pago, name='procesar_pago'),
+    path('pago/getnet/', views.iniciar_pago_getnet, name='iniciar_pago_getnet'),
+    path('pago/resultado/', views.resultado_pago, name='resultado_pago'),
     
     ]
 

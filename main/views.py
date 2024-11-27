@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from .models import Product
+from .models import Product, Transaccion
 from django.contrib import messages
 from .forms import ContactForm
 from django.core.mail import send_mail, BadHeaderError
@@ -133,7 +133,41 @@ def pago(request):
 
 
 
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from .getnet_utils import crear_sesion_pago  # Asume que ya tienes esta función implementada
+
+def procesar_pago(request):
+    if request.method == "POST":
+        total = request.POST.get("total")  # Captura el monto enviado desde carrito.html
+        return render(request, "pago.html", {"total": total})
+    return redirect("carrito")  # Redirige si el método no es POST
+
+def iniciar_pago_getnet(request):
+    if request.method == "POST":
+        total = request.POST.get("total")  # Monto total
+        referencia = "COMPRA-" + str(request.user.id)  # Genera una referencia única
+        return_url = "ro.riosb.pythonanywhere.com/"  # Cambia según tu dominio
+
+        # Llama a la función para crear la sesión en Getnet
+        respuesta = crear_sesion_pago(referencia, total, return_url)
+        
+        if "processUrl" in respuesta:
+            return redirect(respuesta["processUrl"])  # Redirige al Web Checkout de Getnet
+        else:
+            return JsonResponse({"error": respuesta.get("error", "Error al crear la sesión")})
+    return redirect("carrito")  # Redirige si el método no es POST
 
 
+def resultado_pago(request):
+    estado = request.GET.get("status", "PENDIENTE")
+    referencia = request.GET.get("reference", "SIN_REFERENCIA")
+    
+    if estado == "APPROVED":
+        mensaje = "¡Pago aprobado!"
+    elif estado == "REJECTED":
+        mensaje = "El pago fue rechazado."
+    else:
+        mensaje = "El pago está pendiente de confirmación."
 
-
+    return render(request, "resultado_pago.html", {"mensaje": mensaje, "referencia": referencia})

@@ -24,3 +24,11 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+from django.db import models
+
+class Transaccion(models.Model):
+    referencia = models.CharField(max_length=32, unique=True)
+    estado = models.CharField(max_length=20, default='PENDIENTE')
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)

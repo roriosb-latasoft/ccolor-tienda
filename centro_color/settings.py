@@ -146,3 +146,8 @@ EMAIL_HOST_PASSWORD = 'upri tblp vdgx xeum'  # Tu contraseña o la contraseña d
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Cerrar sesión al cerrar el navegador
 
 LOGIN_URL = '/login/'  # URL para redirigir si el usuario no está autenticado
+
+
+GETNET_LOGIN = '7ffbb7bf1f7361b1200b2e8d74e1d76f'
+GETNET_SECRET_KEY = 'SnZP3D63n3I9dH9O'
+GETNET_URL_BASE = 'https://checkout.test.getnet.cl'
