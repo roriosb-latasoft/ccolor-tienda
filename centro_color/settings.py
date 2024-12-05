@@ -28,6 +28,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# settings.py
+TRANSBANK_COMMERCE_CODE = "597055555532"
+TRANSBANK_API_KEY = "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C"
+TRANSBANK_ENVIRONMENT = "TEST"
 
 # Application definition
 
@@ -151,3 +155,8 @@ LOGIN_URL = '/login/'  # URL para redirigir si el usuario no está autenticado
 GETNET_LOGIN = '7ffbb7bf1f7361b1200b2e8d74e1d76f'
 GETNET_SECRET_KEY = 'SnZP3D63n3I9dH9O'
 GETNET_URL_BASE = 'https://checkout.test.getnet.cl'
+
+SESSION_COOKIE_SAMESITE = None
+SESSION_COOKIE_SECURE = True  # Cambia a True si usas HTTPS con Ngrok
+
+CSRF_TRUSTED_ORIGINS = ['https://d4ff-201-187-171-80.ngrok-free.app']

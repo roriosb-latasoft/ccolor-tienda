@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenido a Centro Color</title>
+    <title>Resumen de compra</title>
     {% load static %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -49,35 +49,93 @@
     </nav>
 
 
+
     {% load custom_filters %}
 
-    <div class="container py-5">
-        <h2 class="text-center mb-4">Resumen de Compra</h2>
-        <ul class="list-group mb-3">
-            {% for item in cart_items %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                    <img src="{{ item.image }}" alt="{{ item.name }}" style="width: 50px; height: 50px;" class="me-2">
-                    <span>{{ item.name }}</span>
+    <div class="container mt-5">
+        <h1>Carrito de Compras</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>${{ item.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ item.quantity|multiply:item.price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <hr>
+    
+        <!-- Mostrar total -->
+<!-- Mostrar total con un ID para ser actualizado dinámicamente -->
+<h2>Total: $<span id="total-display"></span></h2>        
+        <div class="container" style="max-width: 500px;">
+            <h4 class="text-center">Información de Envío</h4>
+            <form id="envio-form">
+                <div class="form-group">
+                    <label for="nombre">Nombre completo</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
                 </div>
-                <div>
-                    <span>{{ item.quantity }} x ${{ item.price }}</span>
+                <div class="form-group">
+                    <label for="rut">RUT</label>
+                    <input type="text" class="form-control" id="rut" name="rut" placeholder="12.345.678-9" required>
                 </div>
-            </li>
-            {% endfor %}
-        </ul>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <strong>Total:</strong>
-            <span class="fw-bold">${{ cart_items|sum_total:'price' }}</span>
+                <div class="form-group">
+                    <label for="telefono">Número de Teléfono</label>
+                    <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="+569..." required>
+                </div>
+                <div class="form-group">
+                    <label for="correo">Correo electronico</label>
+                    <input type="correo" class="form-control" id="correo" name="correo" placeholder="correo@ejemplo.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="zona">Zona de Envío</label>
+                    <select class="form-control" id="zona" name="zona" required>
+                        <option value="" data-costo="0">Seleccione una zona</option>
+                        <option value="zona1" data-costo="3990">Santo Domingo - $3990</option>
+                        <option value="zona2" data-costo="3990">Santo Domingo Rural - $3990</option>
+                        <option value="zona3" data-costo="3990">Llolleo - $3990</option>
+                        <option value="zona4" data-costo="3990">Barracas - $3990</option>
+                        <option value="zona5" data-costo="3990">San Antonio - $3990</option>
+                        <option value="zona6" data-costo="3990">Lo Gallardo, San Juan, Cuncumen - $3990</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="direccion">Ingrese Direccion</label>
+                    <input type="text" class="form-control" id="direccion" name="direccion" required>
+                </div>
+    
+                <!-- Botones centrados -->
+                <div class="d-flex flex-column align-items-center mt-4">
+                    <button type="submit" class="btn btn-dark btn-sm mb-3">Confirmar Envío</button>
+                    <a href="{% url 'iniciar_pago' %}?total={{ total }}" id="transbank-btn" 
+                       class="btn btn-primary btn-sm mb-3" 
+                       style="display: none; width: 200px;">
+                       Pagar con Transbank
+                    </a>
+                </div>
+            </form>
         </div>
-        <form action="{% url 'pago' %}" method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="total" value="{{ cart_items|sum_total:'price' }}">
-            <button type="submit" class="btn btn-primary">Ir a pagar</button>
-        </form>
     </div>
-
-
+    <div class="toast" id="toast-envio" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+        <div class="toast-header">
+            <strong class="me-auto">Información de Envío</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            Datos de envío confirmados. Ahora puedes proceder al pago.
+        </div>
+    </div>
     <!-- Footer -->
     <footer class="text-white pt-4">
         <div class="container">
@@ -108,6 +166,64 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("envio-form");
+            const zona = document.getElementById("zona");
+            const totalDisplay = document.getElementById("total-display");
+            const transbankBtn = document.getElementById("transbank-btn");
+            const subtotalElements = document.querySelectorAll("tbody tr td:nth-child(4)");
+            const toastEnvio = new bootstrap.Toast(document.getElementById("toast-envio"));
+    
+            // Función para calcular el total base basado en los subtotales
+            function calcularTotalBase() {
+                let total = 0;
+                subtotalElements.forEach(el => {
+                    const subtotal = parseFloat(el.textContent.replace("$", "").replace(",", "")) || 0;
+                    total += subtotal;
+                });
+                return total;
+            }
+    
+            // Inicializar el total base
+            let totalBase = calcularTotalBase();
+            let totalFinal = totalBase;
+    
+            // Mostrar el total inicial
+            totalDisplay.textContent = totalBase.toFixed(2);
+    
+            // Detectar cambios en la selección de la zona de envío
+            zona.addEventListener("change", function () {
+                const selectedOption = zona.options[zona.selectedIndex];
+                const costoEnvio = parseFloat(selectedOption.dataset.costo) || 0;
+                totalFinal = totalBase + costoEnvio;
+    
+                // Actualizar el total mostrado
+                totalDisplay.textContent = totalFinal.toFixed(2);
+            });
+    
+            // Manejar el envío del formulario
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+    
+                if (form.checkValidity()) {
+                    // Actualizar el enlace del botón de Transbank con el nuevo total
+                    const iniciarPagoUrl = "{% url 'iniciar_pago' %}";
+                    transbankBtn.href = `${iniciarPagoUrl}?total=${totalFinal}`;
+                    transbankBtn.style.display = "block";
+    
+                    // Mostrar el Toast
+                    toastEnvio.show();
+                } else {
+                    alert("Por favor, completa todos los campos del formulario.");
+                }
+            });
+        });
+    </script>
+    
+    
+    
     <style>
         /* Asegura que el contenido llene el espacio disponible */
         html,

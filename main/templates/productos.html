@@ -248,6 +248,30 @@
         });
 
     </script>
+      <script>
+        document.querySelectorAll('.btn-add-cart').forEach(button => {
+            button.addEventListener('click', function () {
+                const product = {
+                    id: this.dataset.id,
+                    name: this.dataset.name,
+                    price: parseFloat(this.dataset.price),
+                    quantity: 1
+                };
+
+                fetch("{% url 'carrito' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify(product)
+                })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
 
 
 
