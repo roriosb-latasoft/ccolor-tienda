@@ -209,13 +209,30 @@ def resultado_pago(request):
     # Recuperar información de la compra desde la sesión
     compra_exitosa = request.session.pop('compra_exitosa', None)
 
+    # Si no hay datos de compra, asegurarse de manejarlo
+    if not compra_exitosa:
+        compra_exitosa = {'carrito': [], 'total': 0.00}
+
     mensaje = "Pago realizado con éxito" if success else "Hubo un error en el pago"
+
+    # Agregar ítems al contexto
+    cart_items = [
+        {
+            'name': item.get('name', 'Producto desconocido'),
+            'quantity': item.get('quantity', 0),
+            'price': item.get('price', 0.00),
+            'subtotal': item.get('quantity', 0) * item.get('price', 0.00),
+        }
+        for item in compra_exitosa.get('carrito', [])
+    ]
 
     return render(request, 'resultado.html', {
         'mensaje': mensaje,
-        'compra_exitosa': compra_exitosa,
+        'cart_items': cart_items,
+        'total': compra_exitosa.get('total', 0.00),
         'success': success,
     })
+
 
 from django.shortcuts import render
 

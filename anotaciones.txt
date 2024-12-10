@@ -1,0 +1,6 @@
+Las compras se realizan en sesion al parecer
+BD solo para items de tienda
+Implementacion de api SII
+Faltan ajustar bordes y margenes
+Titulo 'centro color' podria servir como boton home
+En pagina Carrito deberia poderse editar

@@ -62,6 +62,30 @@
 
 <div class="container py-5">
     <h2 class="text-center">{{ mensaje }}</h2>
+    <h3 class="mt-4">Detalles de la Compra</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+                <td>${{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4 class="text-end mt-3">Total: ${{ total }}</h4>
+
     <a href="{% url 'index' %}" class="btn btn-primary">Volver al inicio</a>
 </div>
 
