@@ -1,6 +1,25 @@
+
+
 Las compras se realizan en sesion al parecer
 BD solo para items de tienda
 Implementacion de api SII
 Faltan ajustar bordes y margenes
 Titulo 'centro color' podria servir como boton home
 En pagina Carrito deberia poderse editar
+
+
+
+ASPECTO TECNICO
+Se tienen que guardar los tokens
+tabla compras state = boolean para saver estado de la compra (correcto o no)
+CODIGO
+tabla compras (registro que se hace en la compra)
+tabla productos_carrito (registro va al pagar)
+tabla transbank (id, token, fecha, tipo_pago, etc)
+
+
+
+
+http://127.0.0.1:8000/resultado_pago/?success=false # reachazado 
+http://127.0.0.1:8000/confirmar_pago/?TBK_TOKEN=01abbee02173a7b5923c8c09d6f102f3257234654411086d1f22edccc2f7f70c&TBK_ORDEN_COMPRA=3104a17c-ccd7-4990-a9b5-85&TBK_ID_SESION=session123
+

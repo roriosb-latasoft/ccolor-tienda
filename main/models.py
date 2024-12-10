@@ -27,3 +27,30 @@ class ContactMessage(models.Model):
 
 from django.db import models
 
+class Compras(models.Model):
+    state = models.IntegerField(default=0)
+    id_tbk = models.IntegerField(default=0)
+    nombre = models.CharField(max_length=100)
+    rut = models.CharField(max_length=15)
+    telefono = models.CharField(max_length=12)
+    correo = models.CharField(max_length=100)
+    costo_envio = models.DecimalField(max_digits=10, decimal_places=2) #
+    direccion = models.CharField(max_length=300)
+    neto = models.IntegerField(default=0) #
+    iva = models.IntegerField(default=0) #
+    total = models.IntegerField()  #
+    date_time = models.DateTimeField(auto_now_add=True)
+    
+class produtos_compras(models.Model):
+    id_compra = models.ForeignKey(Compras, on_delete=models.CASCADE)
+    id_product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    cantidad = models.IntegerField()
+    precio = models.DecimalField(max_digits=10, decimal_places=2) #
+    oferta = models.IntegerField(default=0)
+    precio_final = models.IntegerField()
+    
+class transbank(models.Model):
+    id_compra = models.ForeignKey(Compras, on_delete=models.CASCADE)
+    date_time = models.DateTimeField(auto_now_add=True) #
+    session_id = models.CharField(max_length=100) # buscar 
+    #faltan más datos para modelos
