@@ -9,15 +9,25 @@ En pagina Carrito deberia poderse editar
 
 
 ASPECTO TECNICO
+
 Se tienen que guardar los tokens
 Falta columna cuotas
 tabla compras state = boolean para saber estado de la compra (correcto o no)
 response_code en TBK ={ 
- 0: Transacción aprobada.
--1: Error genérico.
--2: Error en parámetros.
--6: Tiempo de espera excedido.
-}
+        0: Transacción aprobada.
+        -1: Error genérico.
+        -2: Error en parámetros.
+        -6: Tiempo de espera excedido.
+        }
+Se necesita guardar ip_address
+Se necesita guardar user_agent
+
+Se necesita pasar los datos del formulario carrito al backend
+uso de ajax
+
+
+***PARA LOCAL USO DE MYSQL/Workbench
+Revisar migraciones
 
 CODIGO
 tabla compras (registro que se hace en la compra) 

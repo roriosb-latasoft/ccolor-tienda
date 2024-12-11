@@ -84,9 +84,17 @@ WSGI_APPLICATION = 'centro_color.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tbk_ecocolor',
+        'USER': 'root',
+        'PASSWORD': 'Duoc123!',
+        'HOST': 'localhost',  # o dirección IP del servidor
+        'PORT': '3306',
     }
+    #'default': {
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': BASE_DIR / 'db.sqlite3',
+    #}
 }
 
 

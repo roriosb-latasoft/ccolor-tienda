@@ -7,6 +7,7 @@ from django.core.mail import send_mail, BadHeaderError
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import ProductForm
 from django.http import JsonResponse
+# importar dabases compras
 
 # Create your views here.
 from django.shortcuts import render
@@ -145,23 +146,33 @@ from transbank.webpay.webpay_plus.transaction import Transaction
 
 from uuid import uuid4
 from datetime import datetime
+from django.db import models
+
 
 def iniciar_pago(request):
     total = request.GET.get("total", 0)  # Capturar el monto del carrito
     total = int(total)  # Convertir a entero
 
+    data_post = request.POST
+
+    print(data_post)
+
     url_retorno = request.build_absolute_uri('/confirmar_pago/')
     url_final = request.build_absolute_uri('/resultado_pago/')
 
+    # insert data in compras
+    
+    print(request.GET)
+    
     try:
         # Generar un identificador único y acortarlo
-        buy_order = str(uuid4())[:26]  # O usar datetime.now().strftime('%Y%m%d%H%M%S%f')[:26]
+        session_id = str(uuid4())[:26]  # O usar datetime.now().strftime('%Y%m%d%H%M%S%f')[:26]
 
         respuesta = Transaction().create(
-            buy_order=buy_order,  # Usar el identificador único recortado
-            session_id="session123",  # Puedes hacerlo más dinámico si es necesario
-            amount=total,
-            return_url=url_retorno,
+            buy_order = compra.id,
+            session_id = session_id,
+            amount = compra.total,
+            return_url = url_retorno,
         )
         return redirect(respuesta['url'] + '?token_ws=' + respuesta['token'])
     except Exception as e:

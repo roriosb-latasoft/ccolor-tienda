@@ -49,12 +49,17 @@ class produtosCompras(models.Model):
     oferta = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     precio_final = models.IntegerField()
     
-class transbank(models.Model):
+# class transbank(models.Model):
     id_compra = models.ForeignKey(Compras, on_delete=models.CASCADE)
     date_time = models.DateTimeField(auto_now_add=True) #
     session_id = models.CharField(max_length=100) # buscar 
-    token_ws = models.CharField(max_length=200)
+    token_ws = models.CharField(max_length=200) # guardado en char en vez de int
     # state = models.ForeignKey(Compras, on_delete=models.CASCADE) # Traer como FK o guardar acá?
-    response_code = models.CharField(max_length=10, null=True, blank=True)
-    orden_compra = models.IntegerField(max_length=100) #
-    #faltan más datos para modelos
+    cod_respuesta = models.CharField(max_length=10, null=True, blank=True)
+    buy_order = models.CharField(max_length=100) #
+    authorization_code = models.CharField(max_length=20) # codigo autorizacion dado por tbk
+    tipo_pago = models.CharField(max_length=10) # codigo tipo pago (credito-debito-prepago - tipo cuotas )
+    cuotas = models.IntegerField(null=True, blank=True) # nro cuotas    
+    cuota_monto = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True) # monto por cuota
+    nro_tarjeta = models.CharField(max_length=4) # ultimos 4 digitos
+    

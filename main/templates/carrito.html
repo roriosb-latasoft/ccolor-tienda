@@ -169,6 +169,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            const nameFormulario = document.getElementById("nombre");
             const form = document.getElementById("envio-form");
             const zona = document.getElementById("zona");
             const totalDisplay = document.getElementById("total-display");
@@ -207,6 +208,30 @@
             form.addEventListener("submit", function (e) {
                 e.preventDefault();
     
+                const data_post = {
+                    nombre: nameFormulario.value,
+                    rut: form.rut.value,
+                    telefono: form.telefono.value,
+                    correo: form.correo.value,
+                    zona: form.zona.value,
+                    direccion: form.direccion.value,
+                    total: totalFinal
+                }
+                console.log(data_post);
+                // crear formulario
+                new Promise((rest, reject)=>{
+                    fetch( `{% url 'iniciar_pago' %}?total=${totalFinal}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data_post)
+                    })
+                   .then(response => console.log(response))
+                }).then((error) => {
+
+                })
+
                 if (form.checkValidity()) {
                     // Actualizar el enlace del botón de Transbank con el nuevo total
                     const iniciarPagoUrl = "{% url 'iniciar_pago' %}";
