@@ -28,12 +28,12 @@ class ContactMessage(models.Model):
 from django.db import models
 
 class Compras(models.Model):
-    state = models.IntegerField(default=0)
+    state = models.IntegerField(default=0) # boolean o str (3 estados: aceptado, rechazado, cancelado??)
     id_tbk = models.IntegerField(default=0)
     nombre = models.CharField(max_length=100)
     rut = models.CharField(max_length=15)
     telefono = models.CharField(max_length=12)
-    correo = models.CharField(max_length=100)
+    correo = models.EmailField(max_length=100)
     costo_envio = models.DecimalField(max_digits=10, decimal_places=2) #
     direccion = models.CharField(max_length=300)
     neto = models.IntegerField(default=0) #
@@ -41,16 +41,20 @@ class Compras(models.Model):
     total = models.IntegerField()  #
     date_time = models.DateTimeField(auto_now_add=True)
     
-class produtos_compras(models.Model):
+class produtosCompras(models.Model):
     id_compra = models.ForeignKey(Compras, on_delete=models.CASCADE)
     id_product = models.ForeignKey(Product, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
-    precio = models.DecimalField(max_digits=10, decimal_places=2) #
-    oferta = models.IntegerField(default=0)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    oferta = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     precio_final = models.IntegerField()
     
 class transbank(models.Model):
     id_compra = models.ForeignKey(Compras, on_delete=models.CASCADE)
     date_time = models.DateTimeField(auto_now_add=True) #
     session_id = models.CharField(max_length=100) # buscar 
+    token_ws = models.CharField(max_length=200)
+    # state = models.ForeignKey(Compras, on_delete=models.CASCADE) # Traer como FK o guardar acá?
+    response_code = models.CharField(max_length=10, null=True, blank=True)
+    orden_compra = models.IntegerField(max_length=100) #
     #faltan más datos para modelos
