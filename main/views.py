@@ -1,7 +1,7 @@
 import json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from .models import Compras, Product
+from .models import Compras, Product, produtosCompras
 from django.contrib import messages
 from .forms import ContactForm
 from django.core.mail import send_mail, BadHeaderError
@@ -148,7 +148,12 @@ from transbank.webpay.webpay_plus.transaction import Transaction
 from uuid import uuid4
 from datetime import datetime
 from django.db import models
+import ast
 
+def desc_product_front(data):
+    cleaned_data = data.strip('"')
+    list = ast.literal_eval(cleaned_data)
+    return list
 
 def iniciar_pago(request):
     # return 'pipo'
@@ -162,10 +167,11 @@ def iniciar_pago(request):
     correo = data['correo']
     zona = data['zona']
     direccion = data['direccion']
-    total 
+    total = data['total']
+    productos_list = desc_product_front(data['productos'])
     #telefono = data['phone']
-    total = request.GET.get("total", 0)  # Capturar el monto del carrito
-    total = int(total)  # Convertir a entero
+    #total = request.GET.get("total", 0)  # Capturar el monto del carrito
+    #total = int(total)  # Convertir a entero
     
     
     url_retorno = request.build_absolute_uri('/confirmar_pago/')
@@ -179,27 +185,37 @@ def iniciar_pago(request):
         telefono=telefono,
         correo=correo,
         direccion=direccion,
+        costo_envio = 0,
         total=total
     )
-    
     compra.save()
     
-    # print(request.GET)
-    # return JsonResponse({'message': 'Solicitud GET recibida', 'data': 'pipo'})
-    # try:
-        # Generar un identificador único y acortarlo
+    # productos
+   
+    for item in productos_list:
+        product = produtosCompras(
+            id_compra = compra.id,
+            id_product = item['id'],
+            cantidad = item['quantity'],
+            precio = item['price'],
+            oferta = 0,
+            precio_final = item['price'] * item['quantity']
+        )
+        product.save()
+    
     session_id = str(uuid4())[:26]  # O usar datetime.now().strftime('%Y%m%d%H%M%S%f')[:26]
 
     respuesta = Transaction().create(
-        buy_order = '69',
-        session_id = '123132132131',
-        amount = total,
+        buy_order = str(compra.id),
+        session_id = session_id,
+        amount = int(total),
         return_url = url_retorno,
     )
     url = respuesta['url'] + '?token_ws=' + respuesta['token']
     
     # insertar en trasnbank
     
+    # transbank
     
     # return(url)
     return JsonResponse({'mensaje':'success', 'data' :url  })

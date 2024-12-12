@@ -170,7 +170,11 @@
         </div>
     </footer>
     {% csrf_token %}
+
     <script>
+
+        let productos_lista = "{{ cart_items | escapejs  }}"
+
             document.addEventListener("DOMContentLoaded", function () {
                 const nameFormulario = document.getElementById("nombre");
                 const rutFormulario = document.getElementById("rut");
@@ -192,18 +196,18 @@
                 console.log(csrftoken);
 
                 document.querySelector(".btn-send-tbk").addEventListener("click", () =>{
-                    const productos =  {}
-
-
+                    
+                    console.log(productos_lista)
 
                     const data_post = {
-                    nombre: nameFormulario.value,
-                    rut: rutFormulario.value,
-                    telefono: telefonoFormulario.value,
-                    correo: correoFormulario.value,
-                    zona: zona.value,
-                    direccion: direccionFormulario.value,
-                    total: totalFinal
+                        nombre: nameFormulario.value,
+                        rut: rutFormulario.value,
+                        telefono: telefonoFormulario.value,
+                        correo: correoFormulario.value,
+                        zona: zona.value,
+                        direccion: direccionFormulario.value,
+                        total: totalFinal,
+                        productos: JSON.stringify(productos_lista)
                     }
 
                     //window.location.href = `${url_tbk}?total=${totalFinal}`
