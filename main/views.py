@@ -1,7 +1,7 @@
 import json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from .models import Product
+from .models import Compras, Product
 from django.contrib import messages
 from .forms import ContactForm
 from django.core.mail import send_mail, BadHeaderError
@@ -173,8 +173,16 @@ def iniciar_pago(request):
 
     # insert data in compras
     
+    compra = Compras(
+        nombre=nombre,
+        rut=rut,
+        telefono=telefono,
+        correo=correo,
+        direccion=direccion,
+        total=total
+    )
     
-    
+    compra.save()
     
     # print(request.GET)
     # return JsonResponse({'message': 'Solicitud GET recibida', 'data': 'pipo'})
