@@ -22,9 +22,6 @@ urlpatterns = [
     path('iniciar_pago/', views.iniciar_pago, name='iniciar_pago'),
     path('confirmar_pago/', views.confirmar_pago, name='confirmar_pago'),
     path('resultado_pago/', views.resultado_pago, name='resultado_pago'),
-
-  
-   
     
     ]
 

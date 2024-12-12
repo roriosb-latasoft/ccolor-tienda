@@ -118,11 +118,14 @@
                 <!-- Botones centrados -->
                 <div class="d-flex flex-column align-items-center mt-4">
                     <button type="submit" class="btn btn-dark btn-sm mb-3">Confirmar Envío</button>
-                    <a href="{% url 'iniciar_pago' %}?total={{ total }}" id="transbank-btn" 
+                    <!-- <a href="{% url 'iniciar_pago' %}?total={{ total }}" id="transbank-btn" 
                        class="btn btn-primary btn-sm mb-3" 
                        style="display: none; width: 200px;">
                        Pagar con Transbank
-                    </a>
+                    </a> -->
+                    <button class="btn btn-primary btn-sm mb-3 btn-send-tbk" style="display: none; width: 200px;" id="transbank-btn">
+                        pagar
+                    </button>
                 </div>
             </form>
         </div>
@@ -166,17 +169,66 @@
             </div>
         </div>
     </footer>
-
+    {% csrf_token %}
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const nameFormulario = document.getElementById("nombre");
-            const form = document.getElementById("envio-form");
-            const zona = document.getElementById("zona");
-            const totalDisplay = document.getElementById("total-display");
-            const transbankBtn = document.getElementById("transbank-btn");
-            const subtotalElements = document.querySelectorAll("tbody tr td:nth-child(4)");
-            const toastEnvio = new bootstrap.Toast(document.getElementById("toast-envio"));
-    
+            document.addEventListener("DOMContentLoaded", function () {
+                const nameFormulario = document.getElementById("nombre");
+                const rutFormulario = document.getElementById("rut");
+                const telefonoFormulario = document.getElementById("telefono");
+                const correoFormulario = document.getElementById("correo");
+                const direccionFormulario = document.getElementById("direccion");
+                
+                const form = document.getElementById("envio-form");
+                const zona = document.getElementById("zona");
+                const totalDisplay = document.getElementById("total-display");
+                const transbankBtn = document.getElementById("transbank-btn");
+                const subtotalElements = document.querySelectorAll("tbody tr td:nth-child(4)");
+                const toastEnvio = new bootstrap.Toast(document.getElementById("toast-envio"));
+        
+                const url_tbk = "{% url 'iniciar_pago' %}";
+                // const csrf ="{% csrf_token %}"
+                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                console.log("holamundo")
+                console.log(csrftoken);
+
+                document.querySelector(".btn-send-tbk").addEventListener("click", () =>{
+                    const productos =  {}
+
+
+
+                    const data_post = {
+                    nombre: nameFormulario.value,
+                    rut: rutFormulario.value,
+                    telefono: telefonoFormulario.value,
+                    correo: correoFormulario.value,
+                    zona: zona.value,
+                    direccion: direccionFormulario.value,
+                    total: totalFinal
+                    }
+
+                    //window.location.href = `${url_tbk}?total=${totalFinal}`
+
+                    fetch(`${url_tbk}?total=${totalFinal}`,{
+                        method: 'POST', // Método de la solicitud
+                        headers: {
+                            'Content-Type': 'application/json', // Indicar que el cuerpo es JSON
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify(data_post) // Convertir el objeto a un string JSON
+                    }).then(response => response.json()).then(res =>{
+                        console.log('Iniciando data')
+                        console.log(res.data);
+                        const url = res.data;
+                        window.location.href = url
+                    }).catch(err =>{
+                        console.log(err);
+                    })
+
+                })
+
+               
+
+
             // Función para calcular el total base basado en los subtotales
             function calcularTotalBase() {
                 let total = 0;
@@ -208,30 +260,22 @@
             form.addEventListener("submit", function (e) {
                 e.preventDefault();
     
-                const data_post = {
-                    nombre: nameFormulario.value,
-                    rut: form.rut.value,
-                    telefono: form.telefono.value,
-                    correo: form.correo.value,
-                    zona: form.zona.value,
-                    direccion: form.direccion.value,
-                    total: totalFinal
-                }
-                console.log(data_post);
+              
+                
                 // crear formulario
-                new Promise((rest, reject)=>{
-                    fetch( `{% url 'iniciar_pago' %}?total=${totalFinal}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data_post)
-                    })
-                   .then(response => console.log(response))
-                }).then((error) => {
+                // new Promise((rest, reject)=>{
+                //     fetch( `{% url 'iniciar_pago' %}?total=${totalFinal}`, {
+                //         method: 'POST',
+                //         headers: {
+                //             'Content-Type': 'application/json'
+                //         },
+                //         body: JSON.stringify(data_post)
+                //     })
+                //    .then(response => console.log(response))
+                // }).then((error) => {
 
-                })
-
+                // })
+                // llama a al funcion de tbk
                 if (form.checkValidity()) {
                     // Actualizar el enlace del botón de Transbank con el nuevo total
                     const iniciarPagoUrl = "{% url 'iniciar_pago' %}";

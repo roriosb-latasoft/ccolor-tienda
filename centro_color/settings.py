@@ -168,3 +168,5 @@ SESSION_COOKIE_SAMESITE = None
 SESSION_COOKIE_SECURE = True  # Cambia a True si usas HTTPS con Ngrok
 
 CSRF_TRUSTED_ORIGINS = ['https://d4ff-201-187-171-80.ngrok-free.app']
+
+

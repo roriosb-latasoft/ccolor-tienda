@@ -26,6 +26,8 @@ Se necesita pasar los datos del formulario carrito al backend
 uso de ajax
 
 
+CONFIGURAR TBK PARA PRODUCCION 
+
 ***PARA LOCAL USO DE MYSQL/Workbench
 Revisar migraciones
 

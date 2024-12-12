@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from .models import Product
@@ -150,33 +151,54 @@ from django.db import models
 
 
 def iniciar_pago(request):
+    # return 'pipo'
+    # if request.method == 'POST':
+    # return JsonResponse({'foo':'bar'})
+    data = json.loads(request.body)
+    # PASAR TODAS LAS VARIABLES DEL FORMULARIO
+    nombre = data['nombre']
+    rut = data['rut']
+    telefono = data['telefono']
+    correo = data['correo']
+    zona = data['zona']
+    direccion = data['direccion']
+    total 
+    #telefono = data['phone']
     total = request.GET.get("total", 0)  # Capturar el monto del carrito
     total = int(total)  # Convertir a entero
-
-    data_post = request.POST
-
-    print(data_post)
-
+    
+    
     url_retorno = request.build_absolute_uri('/confirmar_pago/')
     url_final = request.build_absolute_uri('/resultado_pago/')
 
     # insert data in compras
     
-    print(request.GET)
     
-    try:
+    
+    
+    # print(request.GET)
+    # return JsonResponse({'message': 'Solicitud GET recibida', 'data': 'pipo'})
+    # try:
         # Generar un identificador único y acortarlo
-        session_id = str(uuid4())[:26]  # O usar datetime.now().strftime('%Y%m%d%H%M%S%f')[:26]
+    session_id = str(uuid4())[:26]  # O usar datetime.now().strftime('%Y%m%d%H%M%S%f')[:26]
 
-        respuesta = Transaction().create(
-            buy_order = compra.id,
-            session_id = session_id,
-            amount = compra.total,
-            return_url = url_retorno,
-        )
-        return redirect(respuesta['url'] + '?token_ws=' + respuesta['token'])
-    except Exception as e:
-        return render(request, 'error.html', {'mensaje': f"Error al iniciar el pago: {str(e)}"})
+    respuesta = Transaction().create(
+        buy_order = '69',
+        session_id = '123132132131',
+        amount = total,
+        return_url = url_retorno,
+    )
+    url = respuesta['url'] + '?token_ws=' + respuesta['token']
+    
+    # insertar en trasnbank
+    
+    
+    # return(url)
+    return JsonResponse({'mensaje':'success', 'data' :url  })
+    #return redirect(url)
+    # except Exception as e:
+    #     print(e)
+    #     return render(request, 'error.html', {'mensaje': f"Error al iniciar el pago: {str(e)}"})
 
 
 def confirmar_pago(request):
@@ -189,7 +211,7 @@ def confirmar_pago(request):
     try:
         # Confirmar la transacción con Webpay Plus
         respuesta = Transaction().commit(token)
-
+        print(respuesta)
         if respuesta['status'] == 'AUTHORIZED':
             # Si el pago es exitoso, generar un ID de compra único
             compra_id = str(uuid4())
