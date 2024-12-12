@@ -43,10 +43,22 @@ class Compras(models.Model):
     
 class produtosCompras(models.Model):
     id_compra = models.IntegerField()
-    id_product = models.IntegerField(Product, on_delete=models.CASCADE)
+    id_product = models.IntegerField()
     cantidad = models.IntegerField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     oferta = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     precio_final = models.IntegerField()
     
-#class Transbank(models.Model):
+class transbank(models.Model):
+    id = models.AutoField(primary_key=True)  
+    fecha = models.DateTimeField(auto_now_add=True)  
+    session_id = models.CharField(max_length=100)  
+    token = models.CharField(max_length=100, default='0')  
+    id_compras = models.IntegerField(default=0)  
+    response_code = models.CharField(max_length=2, default='-1') 
+    authorization_code = models.CharField(max_length=10, default='0')  
+    payment_type_code = models.CharField(max_length=2, default='0')  
+    installments_number = models.IntegerField(default=0)  
+    installments_amount = models.IntegerField(default=0)  
+    card_number = models.CharField(max_length=10, default='0')      
+    total = models.IntegerField()
